@@ -1,0 +1,123 @@
+/* 기본 배경 및 폰트 설정 */
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    text-align: center;
+    background-color: #f4f6f9;
+    /* 부드러운 파스텔톤 배경 */
+    color: #333;
+    margin: 0;
+    padding: 40px 20px;
+}
+
+/* 카드 형식 공통 스타일 */
+header,
+nav,
+.container {
+    background-color: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.03);
+    /* 은은한 그림자 */
+    max-width: 700px;
+    margin: 0 auto 20px auto;
+    padding: 30px;
+}
+
+/* 헤더 스타일 */
+header h1 {
+    margin: 0 0 10px 0;
+    color: #5d6d7e;
+}
+
+.subtitle {
+    color: #85929e;
+    margin: 0;
+}
+
+/* 내비게이션 스타일 */
+nav {
+    padding: 15px 30px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #5d6d7e;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 12px;
+    background-color: #fdf2e9;
+    /* 연한 살구색 */
+    transition: all 0.3s ease;
+}
+
+nav a:hover {
+    background-color: #fae5d3;
+    transform: translateY(-2px);
+}
+
+ul {
+    list-style-type: none;
+    /* 기본 불릿 제거 */
+    padding: 0;
+}
+
+ol {
+    list-style-type: none;
+    /* 기본 불릿 제거 */
+    padding: 0;
+}
+
+/* 타겟 문장 스타일 (메인 카드 내부) */
+#target {
+    font-size: 20px;
+    font-weight: bold;
+    padding: 40px 20px;
+    border-radius: 15px;
+    background-color: #f4ecf7;
+    /* 연한 파스텔 보라색 */
+    color: #512e5f;
+    margin: 20px auto 30px auto;
+    width: 85%;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+/* 버튼 그룹 레이아웃 */
+.btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
+
+/* 버튼 공통 스타일 */
+button {
+    padding: 12px 20px;
+    font-size: 15px;
+    font-weight: bold;
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    border-radius: 12px;
+    color: #444;
+    transition: transform 0.2s, filter 0.3s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+button:hover {
+    filter: brightness(0.95);
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+
+/* 푸터 스타일 */
+footer {
+    margin-top: 30px;
+    color: #888;
+    font-size: 14px;
+}

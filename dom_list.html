@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>인터넷활용 실습 템플릿</title>
+    <link rel="stylesheet" href="style2.css">
+    <style>
+        .comment-section {
+            text-align: left;
+            /* 댓글 영역은 왼쪽 정렬이 자연스럽습니다 */
+            margin-top: 20px;
+        }
+
+        /* 입력창과 버튼을 나란히 배치 */
+        .comment-input-area {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        #commentInput {
+            flex-grow: 1;
+            /* 남은 공간을 모두 차지하도록 설정 */
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.3s;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        #commentInput:focus {
+            border-color: #bae1ff;
+            /* 포커스 시 파스텔 블루 테두리 */
+        }
+
+        .btn-submit {
+            background-color: #bae1ff;
+            color: #444;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 15px;
+            transition: transform 0.2s, filter 0.3s;
+            white-space: nowrap;
+        }
+
+        .btn-submit:hover {
+            filter: brightness(0.95);
+        }
+
+        /* 댓글 목록 리스트 스타일 */
+        #commentList {
+            list-style: none;
+            /* 기본 점(bullet) 제거 */
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            /* 댓글 사이 간격 */
+        }
+
+        #commentList li {
+            background-color: #fdf2e9;
+            /* 연한 살구색 카드 */
+            padding: 15px 20px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+            transition: transform 0.2s;
+            text-align: left;
+        }
+
+        #commentList li:hover {
+            transform: translateY(-2px);
+            /* 마우스 올렸을 때 살짝 떠오르는 효과 */
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #85929e;
+        }
+
+        .comment-text {
+            font-size: 15px;
+            color: #333;
+            line-height: 1.5;
+            word-break: break-all;
+            /* 긴 영어/숫자 줄바꿈 처리 */
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #d9534f;
+            /* 파스텔 레드 */
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 0;
+            margin: 0;
+        }
+
+        .delete-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* 공감 버튼 기본 스타일 (더 얇고 슬림하게 수정) */
+        .like-btn {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 2px 8px;
+            /* 안쪽 여백을 줄여 버튼을 얇게 만듦 */
+            font-size: 12px;
+            /* 글씨 크기도 살짝 축소 */
+            color: #555;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            transition: all 0.2s ease;
+        }
+
+        /* 공감 버튼에 마우스를 올렸을 때 */
+        .like-btn:hover {
+            background-color: #f1f5f9;
+            /* 은은한 그레이 톤 */
+            border-color: #cbd5e1;
+        }
+
+        /* 공감이 활성화되었을 때 (클릭 후) */
+        .like-btn.liked {
+            background-color: #e2e8f0;
+            /* 조금 더 짙은 그레이 */
+            border-color: #cbd5e1;
+            color: #000000;
+            /* 글자와 하트 색상을 진한 검은색으로 */
+            font-weight: bold;
+        }
+    </style>
+    <script>
+        // 댓글 추가 함수
+        function addComment() {
+            var inputElem = document.getElementById("commentInput");
+            var inputStr = inputElem.value;
+
+            // 1. 내용 빈 문자열 체크
+            if (inputStr.trim() === "") {
+                alert("댓글 내용을 입력해주세요.");
+                inputElem.focus();
+                return;
+            }
+
+            // 2. 현재 날짜와 시간 구하기 (YYYY-MM-DD HH:MM)
+            var now = new Date();
+            var year = now.getFullYear();
+            var month = String(now.getMonth() + 1).padStart(2, '0');
+            var date = String(now.getDate()).padStart(2, '0');
+            var hours = String(now.getHours()).padStart(2, '0');
+            var minutes = String(now.getMinutes()).padStart(2, '0');
+            var timeString = year + "-" + month + "-" + date + " " + hours + ":" + minutes;
+
+            // 3. 부모 요소(ul) 찾기 및 새로운 요소(li) 생성
+            var parent = document.getElementById("commentList");
+            var newLi = document.createElement("li");
+
+            // 4. HTML 구조 채우기 (기본 하트를 ♡ 기호로 변경)
+            newLi.innerHTML = `
+            <div class="comment-header">
+                <span class="timestamp">${timeString}</span>
+                <button class="delete-btn">삭제</button>
+            </div>
+            <div class="comment-text">${inputStr}</div>
+            <div class="comment-footer">
+                <button class="like-btn">
+                    <span class="like-icon">♡</span>
+                    <span class="like-count">0</span>
+                </button>
+            </div>
+        `;
+
+            // 5. 삭제 버튼 이벤트 연결
+            var deleteBtn = newLi.querySelector('.delete-btn');
+            deleteBtn.onclick = function () {
+                parent.removeChild(newLi);
+            };
+
+            // 6. 공감(좋아요) 토글 이벤트 연결 (검은색 기본 하트 토글)
+            var likeBtn = newLi.querySelector('.like-btn');
+            var likeIcon = newLi.querySelector('.like-icon');
+            var likeCount = newLi.querySelector('.like-count');
+
+            var count = 0;
+            var isLiked = false;
+
+            likeBtn.onclick = function () {
+                if (!isLiked) {
+                    count++;
+                    likeIcon.textContent = "♥"; // 채워진 검은 하트
+                    likeBtn.classList.add('liked');
+                    isLiked = true;
+                } else {
+                    count--;
+                    likeIcon.textContent = "♡"; // 빈 기본 하트
+                    likeBtn.classList.remove('liked');
+                    isLiked = false;
+                }
+                likeCount.textContent = count;
+            };
+
+            // 7. 리스트에 추가
+            parent.prepend(newLi);
+
+            // 8. 입력 창 초기화
+            inputElem.value = "";
+            inputElem.focus();
+        }
+
+        // 엔터 키 입력 처리
+        function handleEnterKey(event) {
+            if (event.key === 'Enter') {
+                addComment();
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <header>
+        <h1>이름: 유영송</h1>
+        <p class="subtitle">한 줄 소개: (여기에 추가)</p>
+    </header>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="portfolio.html">Portfolio</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+    <main class="container">
+        <section>
+            <h3>댓글 목록</h3>
+            <ul id="commentList"></ul>
+            <div class="comment-input-area">
+                <input type="text" id="commentInput" placeholder="댓글을 남겨주세요!" onkeypress="handleEnterKey(event)">
+                <button class="btn-submit" onclick="addComment()">등록</button>
+            </div>
+        </section>
+
+    </main>
+    <footer>
+        <small>&copy; <span id="year"></span> 이름: 유영송</small>
+    </footer>
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,41 +1,131 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>인터넷활용 실습 템플릿</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style2.css">
+  <style>
+    /* ----- 포트폴리오 섹션 레이아웃 ----- */
+.portfolio-section {
+    text-align: left; /* 메인 콘텐츠 카드는 안정감 있게 왼쪽 정렬 */
+}
+
+.portfolio-section h2 {
+    margin-top: 0;
+    color: #2c3e50;
+    font-size: 24px;
+    border-bottom: 2px solid #f4f6f9; /* 콘텐츠 구분을 위한 연한 파스텔 선 */
+    padding-bottom: 10px;
+}
+
+.intro-text {
+    color: #7f8c8d;
+    font-size: 15px;
+    margin-bottom: 25px;
+}
+
+/* ----- 프로젝트 리스트 및 카드 (ol 태그 확장) ----- */
+.project-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px; /* 프로젝트 카드 간격 */
+}
+
+/* 개별 프로젝트 미니 카드 스타일 */
+.project-item {
+    background-color: #fcf8f2; /* 공통 흰색 카드 배경과 대비되는 연한 웜톤 */
+    border-left: 5px solid #ffdfba; /* 왼쪽 파스텔 오렌지색 포인트 선 */
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.01);
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* 마우스 호버 시 우측으로 살짝 이동하는 인터랙션 */
+.project-item:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.project-title {
+    font-size: 17px;
+    color: #34495e;
+    display: block;
+}
+
+.project-desc {
+    font-size: 14px;
+    color: #7f8c8d;
+    line-height: 1.5;
+}
+
+/* ----- 링크 버튼 스타일 (공통 버튼 느낌 반영) ----- */
+.project-link {
+    align-self: flex-start; /* 버튼이 너비를 100% 다 차지하지 않도록 설정 */
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: bold;
+    color: #4b6584;
+    background-color: #bae1ff; /* 공통 톤에 어울리는 파스텔 블루 */
+    padding: 6px 14px;
+    border-radius: 8px;
+    margin-top: 5px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.project-link:hover {
+    background-color: #a5d4fc;
+    color: #2f3640;
+    transform: translateY(-1px);
+}
+  </style>
 </head>
+
 <body>
-<header>
-  <h1>이름: 유영송</h1>
-  <p class="subtitle">한 줄 소개: (여기에 추가)</p>
-</header>
-<nav>
-  <a href="index.html">Home</a>
-  <a href="about.html">About</a>
-  <a href="portfolio.html">Portfolio</a>
-  <a href="contact.html">Contact</a>
-</nav>
-<main class="container">
-<section>
-  <h2>Portfolio</h2>
-  <p>프로젝트/과제 목록을 간단 설명과 함께 적어 주세요.</p>
-  <ol>
-    <li>
-      <strong>프로젝트 제목: (여기에 추가)</strong><br>
-      설명: (여기에 추가) — <a href="(깃허브 또는 배포 링크)">링크</a>
-    </li>
-    <li>
-      <strong>프로젝트 제목: (여기에 추가)</strong><br>
-      설명: (여기에 추가) — <a href="(깃허브 또는 배포 링크)">링크</a>
-    </li>
-  </ol>
-</section>
-</main>
-<footer>
-  <small>&copy; <span id="year"></span> 이름: 유영송</small>
-</footer>
-<script src="script.js"></script>
+  <header>
+    <h1>이름: 유영송</h1>
+    <p class="subtitle">한 줄 소개: (여기에 추가)</p>
+  </header>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="portfolio.html">Portfolio</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+  <main class="container">
+    <section>
+      <h2>Portfolio</h2>
+      <p>프로젝트/과제 목록을 간단 설명과 함께 적어 주세요.</p>
+      <ol class = "project-list">
+        <li class = "project-item">
+          <strong>프로젝트 제목: (여기에 추가)</strong><br>
+          설명: (여기에 추가) — <a href="(깃허브 또는 배포 링크)">링크</a>
+        </li>
+        <li class = "project-item">
+          <strong>프로젝트 제목: (여기에 추가)</strong><br>
+          설명: (여기에 추가) — <a href="(깃허브 또는 배포 링크)">링크</a>
+        </li>
+        <li class = "project-item">
+          <strong>실습 3: 스타일 변환기</strong><br>
+          설명: DOM 객체의 style 프로퍼티를 이용해 디자인을 변경합니다.- <a href="dom_style.html">페이지 바로가기</a>
+        </li>
+        <li class = "project-item">
+          <strong>실습 4: 댓글 추가삭제/</strong><br>
+          설명: 와createElement 를removeChild 이용한 동적 웹페이지입니다.- <a href="dom_list.html">페이지 바로가기</a>
+        </li>
+      </ol>
+    </section>
+  </main>
+  <footer>
+    <small>&copy; <span id="year"></span> 이름: 유영송</small>
+  </footer>
+  <script src="script.js"></script>
 </body>
+
 </html>

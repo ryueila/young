@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>인터넷활용 실습 템플릿</title>
+    <link rel="stylesheet" href="style2.css">
+    <style>
+        .btn-pink {
+            background-color: #ffe5e8;
+        }
+        
+        .btn-orange {
+            background-color: #ffedd8;
+        }
+
+        .btn-green {
+            background-color: #dcffe4;
+        }
+
+        .btn-blue {
+            background-color: #dff1ff;
+        }
+
+    </style>
+    <script>
+        // 1. 글자색 변경 및 토글 함수
+        function changeColor() {
+            var obj = document.getElementById("target");
+            // 현재 글자색이 변경된 상태(RGB 값으로 체크)인지 확인
+            if (obj.style.color === "rgb(217, 83, 79)" || obj.style.color === "#d9534f") {
+                obj.style.color = ""; // 원래대로
+            } else {
+                obj.style.color = "#d9534f"; // 파스텔 레드
+            }
+        }
+
+        // 2. 글자 크기 변경 및 토글 함수
+        function changeSize() {
+            var obj = document.getElementById("target");
+            if (obj.style.fontSize === "32px") {
+                obj.style.fontSize = ""; // 원래대로
+            } else {
+                obj.style.fontSize = "32px"; // 크게 보기
+            }
+        }
+
+        // 3. 배경색 변경 및 토글 함수
+        function changeBackground() {
+            var obj = document.getElementById("target");
+            // 현재 배경색이 변경된 상태(RGB 값으로 체크)인지 확인
+            if (obj.style.backgroundColor === "rgb(255, 242, 204)" || obj.style.backgroundColor === "#fff2cc") {
+                obj.style.backgroundColor = ""; // 원래대로
+            } else {
+                obj.style.backgroundColor = "#fff2cc"; // 파스텔 옐로우
+            }
+        }
+
+        // 4. 숨기기/보이기 토글 함수
+        function toggleVisibility() {
+            var obj = document.getElementById("target");
+
+            // 현재 display 속성 값을 확인
+            // 주의: 스타일이 인라인으로 설정되지 않은 초기 상태는 빈 문자열("")일 수 있음
+            if (obj.style.display === "none") {
+                obj.style.display = "block";
+            } else {
+                obj.style.display = "none";
+            }
+        }
+        function resetStyle() {
+            var obj = document.getElementById("target");
+            obj.style.color = "";           // 원래 글자색으로 복원
+            obj.style.fontSize = "";        // 원래 글자 크기로 복원
+            obj.style.backgroundColor = ""; // 원래 배경색으로 복원
+        }
+    </script>
+</head>
+
+<body>
+    <header>
+        <h1>이름: 유영송</h1>
+        <p class="subtitle">한 줄 소개: (여기에 추가)</p>
+    </header>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="portfolio.html">Portfolio</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+    <main class="container">
+        <section>
+            <p id="target">이 문장의 스타일을 바꿔보세요!</p>
+            <button class="btn-pink" onclick="changeColor()">글자색 변경</button>
+            <button class="btn-orange" onclick="changeSize()">크게 보기</button>
+            <button class="btn-green" onclick="changeBackground()">배경 강조</button>
+            <button class="btn-blue"onclick="toggleVisibility()">숨기기/보이기</button>
+        </section>
+    </main> 
+    <footer>
+        <small>&copy; <span id="year"></span> 이름: 유영송</small>
+    </footer>
+    <script src="script.js"></script>
+</body>
+
+</html>
