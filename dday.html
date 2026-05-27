@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>인터넷활용 실습 템플릿</title>
+    <link rel="stylesheet" href="style2.css">
+    <style>
+        /* 이 페이지에서만 쓸 디데이 전용 파스텔톤 스타일 */
+        .dday-section {
+            text-align: center;
+        }
+
+        .dday-section h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            font-size: 24px;
+        }
+
+        /* 입력 폼 제어 영역 */
+        .dday-setter {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 320px;
+            margin: 25px auto;
+            background-color: #fdf2e9;
+            /* 연한 살구색 미니 카드 */
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.01);
+        }
+
+        .form-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #5d6d7e;
+        }
+
+        /* 달력 및 입력창 스타일 */
+        .dday-setter input {
+            padding: 8px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+            width: 160px;
+            box-sizing: border-box;
+        }
+
+        .dday-setter input:focus {
+            border-color: #ffdfba;
+        }
+
+        /* 계산 버튼 (기존 공통 버튼 스타일 응용) */
+        .btn-calc {
+            background-color: #ffdfba;
+            /* 파스텔 오렌지 */
+            color: #444;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+
+        .btn-calc:hover {
+            filter: brightness(0.95);
+            transform: translateY(-1px);
+        }
+
+        /* 결과창 디자인 상자 */
+        #ddayResult {
+            margin-top: 30px;
+            padding: 25px;
+            background-color: #f4ecf7;
+            /* 연한 파스텔 보라색 결과 상자 */
+            border-radius: 15px;
+            color: #512e5f;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #ddayResult h3 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        #ddayResult p {
+            margin: 0;
+            font-size: 13px;
+            color: #7d6608;
+        }
+    </style>
+    <script>
+        // 페이지 로드 시 오늘 날짜 기준으로 초기 안내 메시지 띄우기
+        window.onload = function () {
+            // 2026년 기준 기본 타겟 날짜 예시 세팅 (예: 2026-12-25)
+            document.getElementById("targetDate").value = "2026-12-25";
+            calculateDDay();
+        }
+
+        function calculateDDay() {
+            let titleInput = document.getElementById("targetTitle").value.trim();
+            let dateInput = document.getElementById("targetDate").value;
+            let resultBox = document.getElementById("ddayResult");
+
+            // 날짜를 선택하지 않았을 때 예외 처리
+            if (!dateInput) {
+                resultBox.innerHTML = "<h3>목표 날짜를 선택해 주세요!</h3>";
+                return;
+            }
+
+            if (!titleInput) {
+                titleInput = "-";
+            }
+
+            let now = new Date();
+            // 시간 계산의 정확성을 위해 오늘 날짜의 시, 분, 초, 밀리초를 0으로 초기화합니다.
+            let today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+            // 입력받은 연, 월, 일 분리하여 Date 객체 생성
+            let parts = dateInput.split("-");
+            let targetDate = new Date(parts[0], parts[1] - 1, parts[2]);
+
+            // 날짜 차이 계산 (밀리초 단위)
+            let diffMs = targetDate.getTime() - today.getTime();
+            // 밀리초를 일(day) 단위로 변환
+            let diffDay = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+            // HTML 구조로 출력 문자열 만들기
+            let resultHTML = "";
+
+            if (diffDay === 0) {
+                resultHTML = `<h3>[${titleInput}] D-Day</h3>`;
+            } else if (diffDay > 0) {
+                resultHTML = `<h3>[${titleInput}] D-${diffDay}일 남았습니다.</h3>`;
+            } else {
+                resultHTML = `<h3>[${titleInput}] D+${Math.abs(diffDay)}일 지났습니다.</h3>`;
+            }
+
+            // 하단에 기준 정보 추가 표기
+            resultHTML += `<p>목표일: ${targetDate.toLocaleDateString()} | 오늘 날짜: ${today.toLocaleDateString()}</p>`;
+
+            // 화면 업데이트
+            resultBox.innerHTML = resultHTML;
+        }
+    </script>
+</head>
+
+<body>
+    <header>
+        <h1>이름: 유영송</h1>
+        <p class="subtitle">한 줄 소개: (여기에 추가)</p>
+    </header>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="portfolio.html">Portfolio</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+    <main class="container">
+        <section class="dday-section">
+            <h2>Date 객체 활용: D-Day 계산기</h2>
+
+            <div class="dday-setter">
+                <div class="form-group">
+                    <label for="targetTitle">목표 이름</label>
+                    <input type="text" id="targetTitle" placeholder="예: 크리스마스, 시험">
+                </div>
+                <div class="form-group">
+                    <label for="targetDate">목표 날짜</label>
+                    <input type="date" id="targetDate">
+                </div>
+                <button class="btn-calc" onclick="calculateDDay()">D-Day 계산하기</button>
+            </div>
+
+            <div id="ddayResult">
+            </div>
+        </section>
+    </main>
+    <footer>
+        <small>&copy; <span id="year"></span> 이름: 유영송</small>
+    </footer>
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>인터넷활용 실습 템플릿</title>
+    <link rel="stylesheet" href="style2.css">
+    <script>
+        // 입력한 항목들을 담아둘 빈 전역 배열 선언
+        let itemList = [];
+
+        // 1. 항목을 리스트(배열)에 추가하는 함수
+        function addItem() {
+            let inputElem = document.getElementById("itemInput");
+            let value = inputElem.value.trim();
+
+            // 빈 값 체크
+            if (value === "") {
+                alert("내용을 입력해 주세요!");
+                inputElem.focus();
+                return;
+            }
+
+            // 배열에 노출할 값 저장
+            itemList.push(value);
+
+            // 화면 갱신
+            renderItems();
+
+            // 인풋창 비우기
+            inputElem.value = "";
+            inputElem.focus();
+        }
+
+        // 2. 입력된 항목 배열을 바탕으로 화면에 예쁜 '태그 칩' 형태로 그려주는 함수
+        function renderItems() {
+            let poolContainer = document.getElementById("itemPool");
+            poolContainer.innerHTML = ""; // 기존 목록 초기화
+
+            // 배열을 돌며 개별 요소를 span 태그 칩으로 생성
+            itemList.forEach(function (item, index) {
+                let chip = document.createElement("span");
+                chip.textContent = item + " ✕"; // 시각적인 삭제 가이드
+
+                // 인라인 스타일로 귀여운 파스텔톤 태그 스타일링
+                chip.style.backgroundColor = "#ffffff";
+                chip.style.border = "1px solid #ffdfba";
+                chip.style.padding = "6px 12px";
+                chip.style.borderRadius = "20px";
+                chip.style.fontSize = "14px";
+                chip.style.cursor = "pointer";
+                chip.style.display = "inline-block";
+                chip.style.transition = "all 0.2s";
+
+                // 클릭했을 때 해당 아이템을 리스트에서 빼버리는 위트 구현!
+                chip.onclick = function () {
+                    itemList.splice(index, 1); // 배열에서 삭제
+                    renderItems(); // 화면 다시 그리기
+                };
+
+                poolContainer.appendChild(chip);
+            });
+        }
+
+        // 3. 배열 안에서 주사위를 굴려 무작위로 하나를 선택하는 추첨 함수
+        function pickRandom() {
+            let resultBox = document.getElementById("lotteryResult");
+
+            // 등록된 항목이 없으면 조기 가드
+            if (itemList.length === 0) {
+                resultBox.innerHTML = "<h3 style='color: #d9534f;'>항목을 먼저 추가해 주세요!</h3>";
+                return;
+            }
+
+            // Math 객체 활용 랜덤 인덱스 공식
+            let randomIndex = Math.floor(Math.random() * itemList.length);
+            let finalChoice = itemList[randomIndex];
+
+            // 결과 영역에 애니메이션 텍스트 주입
+            resultBox.innerHTML = `
+            <h3 style="margin: 0 0 10px 0;">당신의 선택은...</h3>
+            <h1 style="color: #512e5f; background-color: #f4ecf7; padding: 25px 40px; border-radius: 15px; display: inline-block; margin: 0; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+                ${finalChoice}
+            </h1>
+        `;
+        }
+
+        // 편의 기능: 엔터 쳐도 아이템 들어가게 하기
+        function handleEnterKey(event) {
+            if (event.key === 'Enter') {
+                addItem();
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <header>
+        <h1>이름: 유영송</h1>
+        <p class="subtitle">한 줄 소개: (여기에 추가)</p>
+    </header>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="portfolio.html">Portfolio</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+    <main class="container">
+        <section class="lottery-section">
+            <h2>String + Array + Math 조합: 내맘대로 뽑기</h2>
+
+            <div class="lottery-input-area" style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <input type="text" id="itemInput" placeholder="뽑을 항목을 입력하세요 (예: 짜장면)" onkeypress="handleEnterKey(event)"
+                    style="flex-grow: 1; padding: 12px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 15px; outline: none;">
+                <button onclick="addItem()"
+                    style="background-color: #bae1ff; font-weight: bold; padding: 12px 20px; border: none; border-radius: 12px; cursor: pointer;">추가</button>
+            </div>
+
+            <div class="item-pool-container"
+                style="background-color: #fdf2e9; padding: 20px; border-radius: 15px; text-align: left; margin-bottom: 25px;">
+                <h4 style="margin: 0 0 10px 0; color: #5d6d7e;">현재 등록된 항목 리스트 (클릭 시 삭제)</h4>
+                <div id="itemPool" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+            </div>
+
+            <button onclick="pickRandom()"
+                style="background-color: #ffdfba; font-size: 18px; font-weight: bold; width: 100%; padding: 15px; border: none; border-radius: 12px; cursor: pointer; margin-bottom: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                랜덤 추첨하기!</button>
+
+            <div id="lotteryResult"
+                style="min-height: 100px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <p style="color: #85929e;">항목을 등록하고 추첨하기 버튼을 눌러보세요!</p>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <small>&copy; <span id="year"></span> 이름: 유영송</small>
+    </footer>
+    <script src="script.js"></script>
+</body>
+
+</html>
