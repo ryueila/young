@@ -6,6 +6,93 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>인터넷활용 실습 템플릿</title>
   <link rel="stylesheet" href="style2.css">
+  <style>
+    /* ----- Contact 페이지 전용 스타일 ----- */
+    .contact-section {
+      text-align: left;
+    }
+
+    /* 연락처 정보 리스트 카드 스타일 */
+    .contact-info {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .contact-info li {
+      background-color: #fdf2e9;
+      /* 연한 살구색 */
+      padding: 15px 20px;
+      border-radius: 12px;
+      font-size: 15px;
+      color: #333;
+    }
+
+    .contact-info a {
+      color: #4b6584;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .contact-info a:hover {
+      text-decoration: underline;
+    }
+
+    /* 폼 전체 테두리 상자 */
+    .contact-form {
+      background-color: #ffffff;
+      border: 2px solid #f4f6f9;
+      padding: 25px;
+      border-radius: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .contact-form label {
+      font-size: 14px;
+      font-weight: bold;
+      color: #5d6d7e;
+    }
+
+    /* 입력창 및 텍스트 영역 */
+    .contact-form input,
+    .contact-form textarea {
+      padding: 12px 15px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    /* 입력창 클릭(포커스) 시 파스텔 블루 포인트 */
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      border-color: #bae1ff;
+    }
+
+    /* 보내기 버튼 */
+    .btn-submit {
+      background-color: #bae1ff;
+      color: #444;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 10px;
+    }
+
+    .btn-submit:hover {
+      background-color: #a5d4fc;
+      transform: translateY(-2px);
+    }
+  </style>
 </head>
 
 <body>
@@ -20,20 +107,22 @@
     <a href="contact.html">Contact</a>
   </nav>
   <main class="container">
-    <section>
+    <section class="contact-section">
       <h2>Contact</h2>
-      <ul>
-        <li>이메일: youngsong0911@naver.com</li>
-        <li>GitHub: <a href="https://ryueila.github.io/young">https://ryueila.github.io/young</a></li>
-        <li>기타 링크(블로그/노션 등): (여기에 추가)</li>
+      <ul class="contact-info">
+        <li><strong>이메일</strong> : youngsong0911@naver.com</li>
+        <li><strong>GitHub</strong> : <a href="https://ryueila.github.io/young" target="_blank">https://ryueila.github.io/young</a></li>
+        <li><strong>기타 링크(블로그/노션 등)</strong> : (여기에 추가)</li>
       </ul>
-      <!-- 아래는 정말 기본 예시 폼입니다. JS 없이도 동작하지 않아도 되며, 형태만 제공합니다. -->
-      <form class="contact-form" onsubmit="return false;">
-        <label>이름</label>
-        <input type="text" placeholder="이름을 입력하세요">
-        <label>메시지</label>
-        <textarea rows="4" placeholder="메시지를 입력하세요"></textarea>
-        <button type="submit">보내기 (동작X, 형태만)</button>
+
+      <form class="contact-form">
+        <label for="name">이름</label>
+        <input type="text" id="name" placeholder="이름을 입력하세요">
+
+        <label for="message">메시지</label>
+        <textarea id="message" rows="4" placeholder="메시지를 남겨주세요"></textarea>
+
+        <button type="submit" class="btn-submit">메시지 보내기(동작x, 형태만)</button>
       </form>
     </section>
   </main>

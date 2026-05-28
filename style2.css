@@ -9,6 +9,14 @@ body {
     padding: 40px 20px;
 }
 
+h2 {
+    text-align: center;
+    color: #2c3e50;
+    margin-top: 0;
+    border-bottom: 2px solid #f4f6f9;
+    padding-bottom: 10px;
+}
+
 /* 카드 형식 공통 스타일 */
 header,
 nav,
