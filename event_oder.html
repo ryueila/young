@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>실습 5: 스마트 피자 주문서</title>
+    <link rel="stylesheet" href="style2.css">
+    <style>
+        /* 피자 주문서 전용 파스텔 스타일 */
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        /* 메인 컨테이너 (기존 공통 카드 스타일 반영) */
+        .order-container {
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.03);
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 35px;
+            box-sizing: border-box;
+            text-align: left;
+            /* 폼 내부는 안정감 있게 왼쪽 정렬 */
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        /* 메뉴 전체 상자 디자인 (fieldset 대체) */
+        #menu_box {
+            border: 2px solid #fdf2e9;
+            background-color: #fdf2e9;
+            /* 연한 살구색 미니 카드화 */
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 15px;
+        }
+
+        #menu_box h4 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #e67e22;
+            /* 파스텔 오렌지 포인트 */
+            font-size: 16px;
+        }
+
+        /* 개별 메뉴 줄 레이아웃 */
+        .menu-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #ffffff;
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.01);
+        }
+
+        .menu-item:last-child {
+            margin-bottom: 0;
+        }
+
+        /* 체크박스와 글씨 정렬 */
+        .menu-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        /* 수량 조절 input 스타일 */
+        .menu-qty {
+            padding: 6px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 14px;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .menu-qty:focus {
+            border-color: #ffdfba;
+        }
+
+        /* 하단 폼 입력 요소 레이아웃 */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #5d6d7e;
+        }
+
+        /* 주소창 스타일 */
+        #addr {
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        #addr:focus {
+            border-color: #bae1ff;
+            /* 클릭 시 파스텔 블루 */
+        }
+
+        /* 합계 영역 강조 디자인 */
+        .total-group {
+            background-color: #f4ecf7;
+            /* 연한 파스텔 보라색 */
+            padding: 18px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            font-weight: bold;
+            color: #512e5f;
+        }
+
+        #total {
+            background: transparent;
+            border: none;
+            font-size: 22px;
+            font-weight: bold;
+            color: #512e5f;
+            text-align: right;
+            width: 120px;
+            outline: none;
+        }
+
+        /* 하단 액션 버튼 그룹 */
+        .btn-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-group input[type="submit"],
+        .btn-group input[type="reset"] {
+            flex: 1;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            font-family: inherit;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-group input[type="submit"] {
+            background-color: #bae1ff;
+            /* 파스텔 블루 */
+            color: #2c3e50;
+        }
+
+        .btn-group input[type="reset"] {
+            background-color: #e2e8f0;
+            /* 연회색 */
+            color: #555;
+        }
+
+        .btn-group input:hover {
+            filter: brightness(0.95);
+            transform: translateY(-1px);
+        }
+    </style>
+    <script>
+        /* 기능 1: 가격 계산 함수 */
+        function recalc() {
+            var total = 0;
+            var checks = document.getElementsByClassName("menu-check");
+            var qtys = document.getElementsByClassName("menu-qty");
+
+            for (var i = 0; i < checks.length; i++) {
+                if (checks[i].checked) {
+                    var price = parseInt(checks[i].value);
+                    var quantity = parseInt(qtys[i].value);
+
+                    if (isNaN(quantity) || quantity < 1) {
+                        quantity = 1;
+                    }
+                    total += price * quantity;
+                }
+            }
+            document.getElementById("total").value = total;
+        }
+
+        /* 기능 2: 주소 입력 확인 (브라우저 알림창 버그 차단을 위해 완전히 비워둡니다) */
+        function checkAddress() {
+            //onblur 무한루프를 유발하는 alert를 삭제했습니다.
+            //주소 검사는 아래 validate()에서 안전하게 처리됩니다.
+        }
+
+        /* 기능 3: 주문 전송 제어 (주문하기를 누를 때 주소와 상품을 완벽히 검증) */
+        function validate(e) {
+            var total = parseInt(document.getElementById("total").value);
+            var addr = document.getElementById("addr");
+
+            // 1. 주소가 비어있는지 가장 먼저 검사
+            if (addr.value.trim() == "") {
+                alert("배달 받으실 주소를 반드시 입력해주세요!");
+                addr.focus(); // 여기서 포커스를 주면 무한루프 없이 깔끔하게 이동합니다.
+                e.preventDefault();
+                return false;
+            }
+
+            // 2. 상품 선택 여부 확인
+            if (total == 0) {
+                alert("상품을 적어도 하나는 선택해야 주문 가능합니다.");
+                e.preventDefault();
+                return false;
+            }
+
+            // 3. 최종 주문 완료
+            alert("주문이 완료되었습니다! (총 결제금액: " + total + "원)");
+            e.preventDefault();
+            return false;
+        }
+    </script>
+</head>
+
+<body>
+    <header>
+        <h1>이름: 유영송</h1>
+        <p class="subtitle">한 줄 소개: 광운대학교 전자공학과 유영송입니다!</p>
+    </header>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="portfolio.html">Portfolio</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+    <main class="container">
+        <section>
+            <h2>피자 주문서 (이벤트 활용)</h2>
+
+            <form action="#" onsubmit="return validate(event)">
+
+                <div id="menu_box">
+                    <h4>[메뉴 선택]</h4>
+
+                    <div class="menu-item">
+                        <label class="menu-label">
+                            <input type="checkbox" class="menu-check" value="15000" onchange="recalc()"> 콤비네이션 피자
+                            (15,000원)
+                        </label>
+                        <div>
+                            <input type="number" class="menu-qty" value="1" min="1" style="width: 45px;"
+                                onchange="recalc()" onkeyup="recalc()"> 개
+                        </div>
+                    </div>
+
+                    <div class="menu-item">
+                        <label class="menu-label">
+                            <input type="checkbox" class="menu-check" value="12000" onchange="recalc()"> 페퍼로니 피자
+                            (12,000원)
+                        </label>
+                        <div>
+                            <input type="number" class="menu-qty" value="1" min="1" style="width: 45px;"
+                                onchange="recalc()" onkeyup="recalc()"> 개
+                        </div>
+                    </div>
+
+                    <div class="menu-item">
+                        <label class="menu-label">
+                            <input type="checkbox" class="menu-check" value="2000" onchange="recalc()"> 치즈 토핑 추가
+                            (2,000원)
+                        </label>
+                        <div>
+                            <input type="number" class="menu-qty" value="1" min="1" style="width: 45px;"
+                                onchange="recalc()" onkeyup="recalc()"> 개
+                        </div>
+                    </div>
+
+                    <div class="menu-item">
+                        <label class="menu-label">
+                            <input type="checkbox" class="menu-check" value="1500" onchange="recalc()"> 콜라 1.25L
+                            (1,500원)
+                        </label>
+                        <div>
+                            <input type="number" class="menu-qty" value="1" min="1" style="width: 45px;"
+                                onchange="recalc()" onkeyup="recalc()"> 개
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="addr">배달 주소</label>
+                    <input type="text" id="addr" onblur="checkAddress()" placeholder="배달 받으실 주소를 입력하세요">
+                </div>
+
+                <div class="total-group">
+                    <span>주문 합계 금액</span>
+                    <div>
+                        <input type="text" id="total" value="0" readonly> 원
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <input type="submit" value="주문하기">
+                    <input type="reset" value="초기화" onclick="setTimeout(recalc, 0)">
+                </div>
+            </form>
+        </section>
+    </main>
+    <footer>
+        <small>&copy; <span id="year"></span> 이름: 유영송</small>
+    </footer>
+    <script src="script.js"></script>
+</body>
+
+</html>

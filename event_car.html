@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>실습 6: 키보드 자동차</title>
+    <link rel="stylesheet" href="style2.css">
+    <style>
+        .moving-area {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            height: 70vh;
+            /* 💡 전체 레이아웃과의 조화를 위해 높이를 100vh -> 70vh로 최적화했습니다 */
+            overflow: hidden;
+            /* 전체 스크롤바 방지 */
+
+            /* 상하 레이아웃 분리를 위한 Flexbox 설정 */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ──────── 1. 상단 제목 영역 (독립 구역) ──────── */
+        .title-area {
+            background-color: #ffffff;
+            padding: 20px 30px;
+            height: 95px; /* 높이 고정 */
+            box-sizing: border-box;
+            
+            /* 💡 여기에 원하는 만큼 여백(공간)을 추가합니다 */
+            margin-bottom: 20px; 
+        }
+
+        .title-area h2 {
+            margin: 0 0 5px 0;
+            color: #2c3e50;
+        }
+
+        .title-area p {
+            margin: 0;
+            color: #7f8c8d;
+            font-size: 13px;
+        }
+
+        /* ──────── 2. 하단 게임 필드 영역 (독립 구역) ──────── */
+        #game-field {
+            flex: 1;
+            /* 남은 화면 전체를 차지 */
+            background-color: #f4f6f9;
+            /* 게임판 전용 파스텔 배경 */
+            position: relative;
+            /* 이제 자동차와 벽은 이 필드 기준으로 움직입니다! */
+            overflow: hidden;
+        }
+
+        /* 🚗 귀여운 파스텔톤 자동차 디자인 */
+        #car {
+            position: absolute;
+            left: 30px;
+            top: 40px;
+            /* 필드가 내려왔으므로 초기 Y축을 알맞게 조정 */
+            width: 70px;
+            height: 40px;
+            background-color: #bae1ff;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(186, 225, 255, 0.4);
+            color: #2c3e50;
+            font-weight: bold;
+            text-align: center;
+            line-height: 40px;
+            font-size: 13px;
+            letter-spacing: 1px;
+            z-index: 5;
+        }
+
+        #car::after {
+            content: '';
+            position: absolute;
+            right: 8px;
+            top: 10px;
+            width: 12px;
+            height: 20px;
+            background-color: rgba(255, 255, 255, 0.6);
+            border-radius: 3px;
+        }
+
+        /* 🧱 파스텔 핑크 미로 벽 공통 스타일 */
+        .wall {
+            position: absolute;
+            background-color: #ffb3ba;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(255, 179, 186, 0.3);
+            z-index: 2;
+        }
+
+        /* 📊 하단 계기판 스타일 */
+        #info {
+            position: absolute;
+            /* fixed에서 absolute로 변경하여 게임필드 내부에 종속 */
+            bottom: 20px;
+            left: 30px;
+            padding: 10px 18px;
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #4b6584;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+            z-index: 10;
+        }
+    </style>
+    <script>
+        // 자동차 초기 위치 설정
+        var x = 30;
+        var y = 40;
+        var step = 15;
+
+        // 🧱 미로 벽들의 좌표 데이터 배열
+        var wallsData = [
+            { x: 180, y: 0, w: 30, h: 180 },  // 첫 번째 벽 (아래로 통과)
+            { x: 180, y: 300, w: 30, h: 400 },
+            { x: 360, y: 100, w: 30, h: 250 },  // 두 번째 벽 (위나 아래로 통과)
+            { x: 540, y: 0, w: 30, h: 200 },  // 세 번째 벽 (아래로 통과)
+            { x: 540, y: 320, w: 30, h: 400 }   // 이제 오른쪽 끝 탈출구 영역이 열립니다!
+        ];
+
+        window.onload = function () {
+            var car = document.getElementById("car");
+            var info = document.getElementById("info");
+            var gameField = document.getElementById("game-field");
+
+            // [동적 생성] 벽들을 gameField 내부에 집어넣습니다.
+            for (var i = 0; i < wallsData.length; i++) {
+                var w = wallsData[i];
+                var wallDiv = document.createElement("div");
+                wallDiv.className = "wall";
+                wallDiv.style.left = w.x + "px";
+                wallDiv.style.top = w.y + "px";
+                wallDiv.style.width = w.w + "px";
+                wallDiv.style.height = w.h + "px";
+                gameField.appendChild(wallDiv);
+            }
+
+            document.onkeydown = function (e) {
+                /* 💡 [핵심 해결책] 누른 키가 방향키(37~40)라면 브라우저의 기본 스크롤 동작을 막아줍니다. */
+                if (e.keyCode >= 37 && e.keyCode <= 40) {
+                    e.preventDefault();
+                }
+
+                var prevX = x;
+                var prevY = y;
+
+                switch (e.keyCode) {
+                    case 37: x -= step; break;
+                    case 38: y -= step; break;
+                    case 39: x += step; break;
+                    case 40: y += step; break;
+                }
+
+                /* 화면 이탈 방지 기준 설정 */
+                var fieldW = gameField.clientWidth;
+                var fieldH = gameField.clientHeight;
+
+                if (x < 0) x = 0;
+                if (x > fieldW - 70) x = fieldW - 70;
+                if (y < 0) y = 0;
+                if (y > fieldH - 40) y = fieldH - 40;
+
+                // 🧱 다중 벽 충돌 감지
+                var carWidth = 70;
+                var carHeight = 40;
+
+                for (var i = 0; i < wallsData.length; i++) {
+                    var wall = wallsData[i];
+
+                    if (x < wall.x + wall.w &&
+                        x + carWidth > wall.x &&
+                        y < wall.y + wall.h &&
+                        y + carHeight > wall.y) {
+
+                        x = prevX;
+                        y = prevY;
+                        break;
+                    }
+                }
+
+                // 좌표 적용
+                car.style.left = x + "px";
+                car.style.top = y + "px";
+
+                // 하단 계기판 업데이트
+                info.innerHTML = "📍 현재 좌표 (x, y) = (" + x + ", " + y + ")";
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <header>
+        <h1>이름: 유영송</h1>
+        <p class="subtitle">한 줄 소개: 광운대학교 전자공학과 유영송입니다!</p>
+    </header>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="portfolio.html">Portfolio</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+    <main class="container">
+        <section>
+            <div class="title-area">
+                <h2>키보드 자동차</h2>
+                <p>방향키(←, ↑, →, ↓)를 눌러 자유롭게 운전해보세요!</p>
+            </div>
+
+            <div class="moving-area">
+                <div id="game-field">
+                    <div id="car">CAR</div>
+                    <div id="info">현재 좌표 (x, y) = (30, 40)</div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <small>&copy; <span id="year"></span> 이름: 유영송</small>
+    </footer>
+    <script src="script.js"></script>
+</body>
+
+</html>
